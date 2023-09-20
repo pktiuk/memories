@@ -42,6 +42,7 @@ const EXIF_FIELDS_LIST = [
     'GPSLongitude' => true,
     'GPSAltitude' => true,
     'GPSTimeStamp' => true,
+    'GPSDateStamp' => true,
     'GPSStatus' => true,
 
     // Size / rotation info

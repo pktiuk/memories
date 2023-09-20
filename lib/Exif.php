@@ -90,6 +90,7 @@ class Exif
             'TrackModifyDate',
             'MediaCreateDate',
             'MediaModifyDate',
+            'GPSDateStamp'
         ];
         foreach ($dateFields as $field) {
             if (\array_key_exists($field, $exif) && \is_string($exif[$field]) && str_starts_with($exif[$field], '0000:00:00')) {
@@ -127,7 +128,14 @@ class Exif
 
         // Check if we have a date
         if (null === $exifDate || empty($exifDate) || !\is_string($exifDate)) {
-            throw new \Exception('No date found in exif');
+            $GPSDateStamp = $exif['GPSDateStamp'] ?? null;
+            $GPSTimeStamp = $exif['GPSTimeStamp'] ?? null;
+            if (null !== $GPSDateStamp && null !== $GPSTimeStamp && !empty($GPSDateStamp) && !empty($GPSTimeStamp) && \is_string($GPSDateStamp) && \is_string($GPSTimeStamp)) {
+                $exifDate = "{$GPSDateStamp} {$GPSTimeStamp}";
+            }else
+            {
+                throw new \Exception('No date found in exif');
+            }
         }
 
         // Get timezone from exif
