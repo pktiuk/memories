@@ -55,11 +55,18 @@ class PlacesBackend extends Backend
     public function transformDayQuery(IQueryBuilder &$query, bool $aggregate): void
     {
         $locationId = (int) $this->request->getParam('places');
+        
+        //select photos without any location set
+        if ($locationId === -1){
+            $query->andWhere($query->expr()->isNull('mp.osm_id'));
+        }else{
 
-        $query->innerJoin('m', 'memories_places', 'mp', $query->expr()->andX(
-            $query->expr()->eq('mp.fileid', 'm.fileid'),
-            $query->expr()->eq('mp.osm_id', $query->createNamedParameter($locationId)),
-        ));
+            $query->innerJoin('m', 'memories_places', 'mp', $query->expr()->andX(
+                $query->expr()->eq('mp.fileid', 'm.fileid'),
+                $query->expr()->eq('mp.osm_id', $query->createNamedParameter($locationId)),
+            ));
+        }
+
     }
 
     public function getClustersInternal(int $fileid = 0): array
